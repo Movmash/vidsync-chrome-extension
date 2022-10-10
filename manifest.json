@@ -1,0 +1,21 @@
+{
+  "name": "Vidsync",
+  "version": "0.1.0",
+  "description": "Syncronize your video",
+  "permissions": ["storage", "tabs"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "css": ["contentScript.css"],
+      "js": ["socket.io.min.js","contentScript.js"]
+    }
+  ],
+  "action": {
+    "default_title": "Vidsync",
+    "default_popup": "popup.html"
+  },
+  "manifest_version": 3
+}
