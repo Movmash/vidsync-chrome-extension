@@ -1,4 +1,39 @@
-(() => {
+chrome.runtime.onMessage.addListener(receiveMessage);
+
+function receiveMessage(data, send, senderResponse) {
+  switch (data.type) {
+    case "GET_VIDEO":
+      const videoNumber = document.getElementsByTagName("video");
+      // const videoListData = [];
+      // const videoList = document.getElementsByTagName("video");
+      // const videoListArray = Array.from(videoList);
+      // console.log(data);
+      // for (let i = 0; i < videoListArray.length; i++) {
+      //   const tmp = document.createElement("div");
+      //   tmp.appendChild(videoListArray[i].cloneNode(true));
+      //   videoListData.push(tmp.innerHTML);
+      // }
+      return senderResponse({ videoNumber });
+
+    default:
+      break;
+  }
+  // if (data.type === "GET_VIDEO") {
+  //   const videoListData = [];
+  //   const videoList = document.getElementsByTagName("video");
+  //   const videoListArray = Array.from(videoList);
+
+  //   for (let i = 0; i < videoListArray.length; i++) {
+  //     const tmp = document.createElement("div");
+  //     tmp.appendChild(videoListArray[i].cloneNode(true));
+  //     videoListData.push(tmp.innerHTML);
+  //   }
+  //   //  videoFinding(videoList);
+  //   senderResponse({ videoListData });
+  // }
+}
+
+function videoFinding() {
   const findingVideo = setInterval(checkingVideoList, 1000);
   function checkingVideoList() {
     if (document.getElementsByTagName("video").length != 0) {
@@ -7,7 +42,7 @@
     }
     console.log(document.getElementsByTagName("video").length);
   }
-})();
+}
 
 function sync() {
   const socket = io("http://localhost:3000");
