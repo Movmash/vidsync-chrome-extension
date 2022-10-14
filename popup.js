@@ -16,33 +16,19 @@ const createVideoCard = (index) => {
   const syncButton = document.createElement("button");
   syncButton.className = "btn sync-btn";
   syncButton.innerHTML = "Sync";
-  syncButton.onclick = () => sendMessage({type: "SYNC_VIDEO", index });
+  syncButton.onclick = () => sendMessage({type: "SYNC_VIDEO", index }, (res) => {console.log(res)});
   div.appendChild(videoIndex);
   div.appendChild(syncButton);
   videoContainer.appendChild(div);
 
 }
 
-const sendMessage = (data, callback = () => {}) => {
-  document.querySelectorAll(".video-card").forEach(card => card.remove());
-  const queryOptions = { active: true, currentWindow: true };
-  chrome.tabs.query(queryOptions, (tabs) => {
-    chrome.tabs.sendMessage(tabs[0].id, data, callback);
-  });
-}
 const createRoom = () => {
+  document.querySelectorAll(".video-card").forEach((card) => card.remove());
   sendMessage({ type: "GET_VIDEO" }, (response) => {
-    console.log(response["videoNumber"]);
     const totalVideo = response["videoNumber"];
-    for (let index = 0; index < totalVideo.length; index++) 
+    for (let index = 0; index < totalVideo; index++) 
       createVideoCard(index);
-      // const videoTag = new DOMParser().parseFromString(
-      //   data[i],
-      //   "text/xml"
-      // ).firstChild;
-      // console.log(videoTag);
-      // videoContainer.appendChild(videoTag);
-    
   });
 };
 
