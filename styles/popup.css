@@ -88,8 +88,8 @@ body {
   cursor: not-allowed;
 }
 
-.create-container {
-  width: 100%;
+.main-content {
+  width: 660px;
   backdrop-filter: blur(10px);
   position: absolute;
   top: 0;
@@ -98,9 +98,12 @@ body {
   transform: translate(0, 100%);
   transition: 350ms;
   overflow-y: auto;
+  display: flex;
 }
-
-.create-container.moveup {
+.main-content.moveup.moveleft {
+  transform: translate(-50%, 0);
+}
+.main-content.moveup {
   transform: translate(0, 0);
 }
 .resize {
@@ -145,4 +148,34 @@ body {
   font-size: 20px;
   color: var(--color);
   font-family: "Poppins", sans-serif;
+}
+
+.video-list-content {
+  width: 330px;
+}
+
+.room-content {
+  width: 330px;
+}
+
+.room-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.room-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  grid-gap: 10px;
+}
+
+#room-id {
+  font-size: 60px;
+}
+
+.leave-btn{
+  width: 200px;
+  background: #bd1c1c;;
 }

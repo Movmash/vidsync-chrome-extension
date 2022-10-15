@@ -1,21 +1,45 @@
+const socketData = {
+  socket: {},
+  serverOrigin: "http://localhost:3000",
+};
+const roomInfo = {
+  roomId: "",
+  host: false,
+  isJoined: false,
+}
+
+function socketInit (index = 0, isCreateRoom = true, roomId = ""){
+  socketData.socket = io(socketData.serverOrigin);
+  roomInfo.roomId = roomId;
+  const {socket} = socketData;
+  roomInfo.host = isCreateRoom;
+  socket.emit("join-room", {roomInfo});
+  socket.on("join-room", (data) => {
+    console.log(data);
+  });
+  roomInfo.isJoined = true;
+  return sync(index);
+}
+
 function sync(index) {
-  const socket = io("http://localhost:3000");
+  console.log(roomInfo);
+  const { socket } = socketData;
   const videoList = document.getElementsByTagName("video");
   const video = videoList[index];
   let host = false;
   let roomId = "";
-  console.log(video);
-  socket.on("connected", (data) => {
-    console.log(data.message);
-  });
+  // console.log(video);
+  // socket.on("connected", (data) => {
+  //   console.log(data.message);
+  // });
 
-  socket.emit("create-room");
-  socket.on("create-room", (data) => {
-    console.log(data);
-    roomId = data.roomId;
-    host = data.host;
-    if (!host) syncVideoWithHost();
-  });
+  // socket.emit("create-room");
+  // socket.on("create-room", (data) => {
+  //   console.log(data);
+  //   roomId = data.roomId;
+  //   host = data.host;
+  //   if (!host) syncVideoWithHost();
+  // });
 
   const videoState = {
     paused: video.paused,

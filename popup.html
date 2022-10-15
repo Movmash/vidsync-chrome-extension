@@ -11,18 +11,37 @@
         <h2 class="logo-name">Vid <b>Sync</b></h2>
       </div>
       <div class="form-content">
-        <input id="room-code" type="text" class="room-code-input" placeholder="Room Code">
+        <input
+          id="room-code"
+          type="text"
+          class="room-code-input"
+          placeholder="Room Code"
+        />
         <div class="button-list">
-            <button id="create-btn" class="btn transparent-btn">CREATE</button>
-            <button id="join-btn" class="btn disabled" >JOIN</button>
+          <button id="create-btn" class="btn transparent-btn">CREATE</button>
+          <button id="join-btn" class="btn disabled">JOIN</button>
         </div>
       </div>
     </div>
-    <div id="create-container" class="create-container">
-      <div class="close-btn-container">
-        <img id="close-btn" class="btn transparent-btn resize" src="assets/icons/close.svg" alt="close" />
+    <div id="main-content" class="main-content">
+      <div class="video-list-content">
+        <div class="close-btn-container">
+          <img
+            id="close-btn"
+            class="btn transparent-btn resize"
+            src="assets/icons/close.svg"
+            alt="close"
+          />
+        </div>
+        <div id="video-container"></div>
       </div>
-      <div id="video-container"></div>
+      <div class="room-content">
+        <div class="room-info">
+            <p>Your room code</p>
+            <h3 id="room-id"></h3>
+            <button class="btn leave-btn">Leave Room</button>
+        </div>
+      </div>
     </div>
     <script src="popup.js"></script>
   </body>
