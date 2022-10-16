@@ -175,7 +175,15 @@ body {
   font-size: 60px;
 }
 
-.leave-btn{
+.leave-btn {
   width: 200px;
-  background: #bd1c1c;;
+  background: #bd1c1c;
+}
+
+#reload-img {
+  position: absolute;
+  z-index: 2;
+  top: 37%;
+  left: 20%;
+  cursor: pointer;
 }

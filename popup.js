@@ -5,34 +5,19 @@ const mainContainer = document.getElementById("main-content");
 const closeCreateContainerButton = document.getElementById("close-btn");
 const videoContainer = document.getElementById("video-container");
 let roomCode = "";
-const roomInfo = {
-  roomId: "",
-  host: false,
-  isJoined: false,
-};
+
 document.addEventListener("DOMContentLoaded", () => {
   console.log("hello");
-  chrome.storage.local.get(Object.keys(roomInfo), function (result) {
-    console.log(result);
-    if (Object.keys(result).length !== 0) {
-      roomInfo.roomId = result["roomId"];
-      roomInfo.host = result["host"];
-      roomInfo.isJoined = result["isJoined"];
-      if (roomInfo.isJoined) {
-        document.getElementById("room-id").innerHTML = roomInfo.roomId;
-        mainContainer.classList.add("moveup");
-        mainContainer.classList.add("moveleft");
-      }
+  sendMessage({type:"GET_ROOM_INFO"}, (response) => {
+    if (response.isJoined) {
+      document.getElementById("room-id").innerHTML = response.roomId;
+      mainContainer.classList.add("moveup");
+      mainContainer.classList.add("moveleft");
     }
   });
 });
 
 const onRoomJoined = (response) => {
-  console.log(response);
-  chrome.storage.local.set(response, function () {
-    console.log("Value is set to ");
-  });
-
   document.getElementById("room-id").innerHTML = response.roomId;
   mainContainer.classList.add("moveleft");
 };
@@ -59,10 +44,22 @@ const createVideoCard = (index) => {
 
 const createRoom = () => {
   document.querySelectorAll(".video-card").forEach((card) => card.remove());
+  
   sendMessage({ type: "GET_VIDEO" }, (response) => {
     console.log(response);
     const totalVideo = response["videoNumber"];
-    for (let index = 0; index < totalVideo; index++) createVideoCard(index);
+    if(totalVideo){
+      const reloadImage = document.getElementById("reload-img");
+      if (reloadImage) reloadImage.remove();
+        for (let index = 0; index < totalVideo; index++) createVideoCard(index);
+    }else {
+      const reloadImage = document.createElement("img");
+      reloadImage.src = "./assets/icons/reload.svg";
+      reloadImage.id = "reload-img";
+      reloadImage.onclick = () => createRoom();
+      videoContainer.appendChild(reloadImage);
+    }
+
   });
 };
 

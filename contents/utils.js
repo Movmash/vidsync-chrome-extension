@@ -1,15 +1,19 @@
-const activateChromeListener = () => chrome.runtime.onMessage.addListener(receiveMessage);
+const activateChromeListener = () =>{ console.log("listener start"); chrome.runtime.onMessage.addListener(receiveMessage)};
 
 function receiveMessage(data, send, senderResponse) {
+        console.log(data);
   switch (data.type) {
     case "GET_VIDEO":
       const videoNumber = document.getElementsByTagName("video").length;
+      console.log(videoNumber);
       return senderResponse({ videoNumber });
     case "CREATE_ROOM":
       console.log("this is sync", data.index);
       const roomId = uuid();
       socketInit(data.index, true, roomId);
       return senderResponse({ roomId, host: true, isJoined: true });
+    case "GET_ROOM_INFO":
+      return senderResponse(roomInfo);
     default:
       break;
   }
