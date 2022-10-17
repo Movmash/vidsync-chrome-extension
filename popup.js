@@ -4,11 +4,13 @@ const input = document.getElementById("room-code");
 const mainContainer = document.getElementById("main-content");
 const closeCreateContainerButton = document.getElementById("close-btn");
 const videoContainer = document.getElementById("video-container");
+const leaveButton = document.getElementById("leave-btn");
+
 let roomCode = "";
 
 document.addEventListener("DOMContentLoaded", () => {
   console.log("hello");
-  sendMessage({type:"GET_ROOM_INFO"}, (response) => {
+  sendMessage({ type: "GET_ROOM_INFO" }, (response) => {
     if (response.isJoined) {
       document.getElementById("room-id").innerHTML = response.roomId;
       mainContainer.classList.add("moveup");
@@ -44,26 +46,41 @@ const createVideoCard = (index) => {
 
 const createRoom = () => {
   document.querySelectorAll(".video-card").forEach((card) => card.remove());
-  
+
   sendMessage({ type: "GET_VIDEO" }, (response) => {
     console.log(response);
     const totalVideo = response["videoNumber"];
-    if(totalVideo){
+    if (totalVideo) {
       const reloadImage = document.getElementById("reload-img");
       if (reloadImage) reloadImage.remove();
-        for (let index = 0; index < totalVideo; index++) createVideoCard(index);
-    }else {
+      for (let index = 0; index < totalVideo; index++) createVideoCard(index);
+    } else {
       const reloadImage = document.createElement("img");
       reloadImage.src = "./assets/icons/reload.svg";
       reloadImage.id = "reload-img";
       reloadImage.onclick = () => createRoom();
       videoContainer.appendChild(reloadImage);
     }
-
   });
 };
 
-const joinRoom = (e) => {};
+const joinRoom = (e) => {
+  sendMessage({ type: "JOIN_ROOM", roomId: roomCode }, (response) => {
+    if (response.isJoined) {
+      document.getElementById("room-id").innerHTML = response.roomId;
+      mainContainer.classList.add("moveup");
+      mainContainer.classList.add("moveleft");
+    }
+  });
+};
+
+const leaveRoom = (e) => {
+  sendMessage({ type: "LEAVE_ROOM" }, (data) => {
+    console.log("you left");
+    mainContainer.classList.remove("moveup");
+    mainContainer.classList.remove("moveleft");
+  });
+};
 
 const openCreateContainer = () => {
   mainContainer.classList.add("moveup");
@@ -88,6 +105,8 @@ const onKeyUp = (e) => {
 input.addEventListener("keyup", (e) => onKeyUp(e));
 
 joinButton.addEventListener("click", joinRoom);
+
+leaveButton.addEventListener("click", leaveRoom);
 
 createButton.addEventListener("click", (e) => openCreateContainer());
 

@@ -13,42 +13,38 @@ function socketInit (index = 0, isCreateRoom = true, roomId = ""){
   roomInfo.roomId = roomId;
   const {socket} = socketData;
   roomInfo.host = isCreateRoom;
-  socket.emit("join-room", {roomInfo});
-  socket.on("join-room", (data) => {
-    console.log(data);
+  console.log(roomInfo);
+  socket.emit("joinroom", roomInfo);
+  socket.on("joinroom", (data) => {
+    console.log(`user joined with ${data}`);
   });
   roomInfo.isJoined = true;
   return sync(index);
 }
 
+const leaveRoom = () => {
+  const { socket } = socketData;
+  roomInfo.host = false;
+  roomInfo.isJoined = false;
+  roomInfo.roomId = "";
+  socket.disconnect();
+};
+
 function sync(index) {
-  console.log(roomInfo);
+
   const { socket } = socketData;
   const videoList = document.getElementsByTagName("video");
   const video = videoList[index];
-  let host = false;
-  let roomId = "";
-  // console.log(video);
-  // socket.on("connected", (data) => {
-  //   console.log(data.message);
-  // });
-
-  // socket.emit("create-room");
-  // socket.on("create-room", (data) => {
-  //   console.log(data);
-  //   roomId = data.roomId;
-  //   host = data.host;
-  //   if (!host) syncVideoWithHost();
-  // });
-
+  const { host, roomId } = roomInfo;
   const videoState = {
     paused: video.paused,
     currentTime: video.currentTime,
     playbackRate: video.playbackRate,
   };
-
   const hostVideoState = {};
 
+  if (!host) syncVideoWithHost();
+  
   function updateState() {
     videoState["paused"] = video.paused;
     videoState["currentTime"] = video.currentTime;
@@ -62,7 +58,9 @@ function sync(index) {
     hostVideoState["playbackRate"] = video.playbackRate;
     return hostVideoState;
   }
-  const syncVideoTo = (srcState) => {
+
+  function syncVideoTo (srcState) {
+    console.log("syncing...");
     video.currentTime = srcState["currentTime"];
     video.playbackRate = srcState["playbackRate"];
     if (!srcState["paused"]) video.play();
@@ -71,11 +69,10 @@ function sync(index) {
     updateHostState();
   };
 
-  const syncVideoWithHost = () => {
+  function syncVideoWithHost() {
     if (host) return;
     updateState();
-    console.log(hostVideoState);
-    console.log(videoState);
+    console.log("sync with host");
     if (!Object.keys(hostVideoState).length)
       return socket.emit("syncwithhost", { roomId });
 

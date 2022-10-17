@@ -9,9 +9,17 @@ function receiveMessage(data, send, senderResponse) {
       return senderResponse({ videoNumber });
     case "CREATE_ROOM":
       console.log("this is sync", data.index);
-      const roomId = uuid();
+      const roomId = `${uuid()}-${data.index}`;
       socketInit(data.index, true, roomId);
-      return senderResponse({ roomId, host: true, isJoined: true });
+      return senderResponse(roomInfo);
+    case "JOIN_ROOM":
+      const index = data.roomId.split("-")[1];
+      socketInit(index, false, data.roomId);
+      return senderResponse(roomInfo);
+    case "LEAVE_ROOM":
+      console.log(data);
+      leaveRoom();
+      return senderResponse(roomInfo);
     case "GET_ROOM_INFO":
       return senderResponse(roomInfo);
     default:
