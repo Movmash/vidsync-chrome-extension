@@ -1,6 +1,6 @@
 const socketData = {
   socket: {},
-  serverOrigin: "http://localhost:3000",
+  serverOrigin: "https://vidsyncronize.herokuapp.com/",
 };
 const roomInfo = {
   roomId: "",
@@ -8,7 +8,7 @@ const roomInfo = {
   isJoined: false,
 }
 
-function socketInit (index = 0, isCreateRoom = true, roomId = ""){
+function socketInit (videoDetail = {}, isCreateRoom = true, roomId = ""){
   socketData.socket = io(socketData.serverOrigin);
   roomInfo.roomId = roomId;
   const {socket} = socketData;
@@ -19,7 +19,7 @@ function socketInit (index = 0, isCreateRoom = true, roomId = ""){
     console.log(`user joined with ${data}`);
   });
   roomInfo.isJoined = true;
-  return sync(index);
+  return sync(videoDetail);
 }
 
 const leaveRoom = () => {
@@ -30,11 +30,13 @@ const leaveRoom = () => {
   socket.disconnect();
 };
 
-function sync(index) {
+function sync(videoData) {
 
   const { socket } = socketData;
-  const videoList = document.getElementsByTagName("video");
-  const video = videoList[index];
+  // const videoList = document.getElementsByTagName("video");
+  console.log(videoData);
+  const video = retreiveVideoTag(videoData);
+  console.log(video);
   const { host, roomId } = roomInfo;
   const videoState = {
     paused: video.paused,

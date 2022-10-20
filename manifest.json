@@ -10,12 +10,22 @@
     {
       "matches": ["<all_urls>"],
       "css": ["styles/contentScript.css"],
-      "js": ["libraries/socket.io.min.js","contents/sync.js","contents/utils.js","contents/contentScript.js"]
+      "js": [
+        "libraries/socket.io.min.js",
+        "contents/sync.js",
+        "contents/utils.js",
+        "contents/contentScript.js"
+      ]
     }
   ],
   "action": {
     "default_title": "Vidsync",
     "default_popup": "popup.html"
+  },
+  "icons": {
+    "16": "assets/images/logo16px.png",
+    "48": "assets/images/logo16px.png",
+    "128": "assets/images/logo16px.png"
   },
   "manifest_version": 3
 }

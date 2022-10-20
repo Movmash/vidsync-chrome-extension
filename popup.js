@@ -24,22 +24,29 @@ const onRoomJoined = (response) => {
   mainContainer.classList.add("moveleft");
 };
 
-const creatingRoom = (e, index) => {
+const creatingRoom = (e, videoDetail) => {
   e.preventDefault();
-  sendMessage({ type: "CREATE_ROOM", index }, onRoomJoined);
+  sendMessage({ type: "CREATE_ROOM", videoDetail }, onRoomJoined);
 };
 
-const createVideoCard = (index) => {
+const createVideoCard = (videoData) => {
+  const {duration, isIframe, index} = videoData;
   const div = document.createElement("div");
   div.className = "video-card";
+  const videoInfo = document.createElement("div");
+  videoInfo.className = "video-info-card";
   const videoIndex = document.createElement("h2");
+  const iframe = document.createElement("span");
+  iframe.innerHTML = isIframe && "Iframe";
   videoIndex.className = "video-index";
   videoIndex.innerHTML = index + 1;
   const syncButton = document.createElement("button");
   syncButton.className = "btn sync-btn";
   syncButton.innerHTML = "Sync";
-  syncButton.onclick = (e) => creatingRoom(e, index);
-  div.appendChild(videoIndex);
+  syncButton.onclick = (e) => creatingRoom(e, videoData);
+  videoInfo.appendChild(videoIndex);
+  videoInfo.appendChild(iframe);
+  div.appendChild(videoInfo);
   div.appendChild(syncButton);
   videoContainer.appendChild(div);
 };
@@ -49,11 +56,11 @@ const createRoom = () => {
 
   sendMessage({ type: "GET_VIDEO" }, (response) => {
     console.log(response);
-    const totalVideo = response["videoNumber"];
-    if (totalVideo) {
+    const videoList = response["videoList"];
+    if (videoList.length) {
       const reloadImage = document.getElementById("reload-img");
       if (reloadImage) reloadImage.remove();
-      for (let index = 0; index < totalVideo; index++) createVideoCard(index);
+      for (let index = 0; index < videoList.length; index++) createVideoCard(videoList[index]);
     } else {
       const reloadImage = document.createElement("img");
       reloadImage.src = "./assets/icons/reload.svg";

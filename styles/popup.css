@@ -172,7 +172,7 @@ body {
 }
 
 #room-id {
-  font-size: 60px;
+  font-size: 42px;
 }
 
 .leave-btn {
@@ -186,4 +186,11 @@ body {
   top: 37%;
   left: 20%;
   cursor: pointer;
+}
+
+.video-info-card{
+    display: flex;
+    justify-content: space-evenly;
+    align-items: center;
+    color: var(--color);
 }

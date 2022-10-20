@@ -1,20 +1,19 @@
 const activateChromeListener = () =>{ console.log("listener start"); chrome.runtime.onMessage.addListener(receiveMessage)};
 
 function receiveMessage(data, send, senderResponse) {
-        console.log(data);
   switch (data.type) {
     case "GET_VIDEO":
-      const videoNumber = document.getElementsByTagName("video").length;
-      console.log(videoNumber);
-      return senderResponse({ videoNumber });
+      const videoList = findFirstVideoTag();
+      return senderResponse({ videoList });
     case "CREATE_ROOM":
-      console.log("this is sync", data.index);
-      const roomId = `${uuid()}-${data.index}`;
-      socketInit(data.index, true, roomId);
+      const videoDetail = data.videoDetail;
+      console.log("this is sync", videoDetail.index);
+      const roomId = generateRoomCode(videoDetail);
+      socketInit(videoDetail, true, roomId);
       return senderResponse(roomInfo);
     case "JOIN_ROOM":
-      const index = data.roomId.split("-")[1];
-      socketInit(index, false, data.roomId);
+      const videoData = decodeRoomId(data.roomId);
+      socketInit(videoData, false, data.roomId);
       return senderResponse(roomInfo);
     case "LEAVE_ROOM":
       console.log(data);
@@ -25,6 +24,26 @@ function receiveMessage(data, send, senderResponse) {
     default:
       break;
   }
+}
+
+function decodeRoomId (id) {
+  const decodeArray = id.split("-");
+  const isIframe = decodeArray.length == 4;
+  const iFrameIndex = isIframe ? decodeArray[1] : "";
+  const index = decodeArray[decodeArray.length - 1];
+  return {isIframe, iFrameIndex, index};
+}
+function generateRoomCode (data) {
+  const codeArray = [];
+  const { isIframe, iFrameIndex, index } = data;
+  if(isIframe){ 
+    codeArray.push("i");
+    codeArray.push(iFrameIndex.toString());
+  }
+  codeArray.push(uuid().toString());
+  codeArray.push(index.toString());
+  
+  return codeArray.join("-");
 }
 
 function uuid () {
