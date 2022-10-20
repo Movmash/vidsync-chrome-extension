@@ -1,6 +1,4 @@
-(() => {
-  activateChromeListener();
-})();
+activateChromeListener();
 
 function findFirstVideoTag() {
   const videoList = [];
@@ -20,6 +18,7 @@ function findFirstVideoTag() {
   for (let i = 0; i < frames.length; ++i) {
     try {
       var childDocument = frames[i].contentDocument;
+      var childVideo = frames[i].contentDocument.getElementsByTagName("video");
     } catch (e) {
       continue;
     } // skip ones we can't access :|
