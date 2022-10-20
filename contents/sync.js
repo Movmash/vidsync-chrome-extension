@@ -34,7 +34,6 @@ function sync(videoData) {
 
   const { socket } = socketData;
   // const videoList = document.getElementsByTagName("video");
-  console.log(videoData);
   const video = retreiveVideoTag(videoData);
   console.log(video);
   const { host, roomId } = roomInfo;
@@ -111,6 +110,15 @@ function sync(videoData) {
     socket.emit("onpause", { roomId, videoState });
   };
 
+  video.onseeked = (e) => {
+    if (!host) {
+      syncVideoWithHost();
+      return;
+    }
+    updateState();
+    socket.emit("onseeked", {roomId, videoState});
+  }
+
   socket.on("onpause", ({ videoState }) => {
     if (host) return;
     syncVideoTo(videoState);
@@ -120,6 +128,11 @@ function sync(videoData) {
     if (host) return;
     syncVideoTo(videoState);
   });
+
+  socket.on("onseeked", ({videoState}) => {
+    if(host) return;
+    syncVideoTo(videoState);
+  })
 
   socket.on("syncwithhost", () => {
     if (!host) return;
